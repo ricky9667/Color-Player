@@ -13,7 +13,7 @@ class ColorPanel extends StatelessWidget {
       body: BlocBuilder<ColorPanelBloc, ColorPanelState>(
           builder: (context, state) {
         return Container(
-          margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 60.0),
+          margin: EdgeInsets.fromLTRB(20.0, 40.0, 20.0, 120.0),
           child: Card(
             color: Colors.grey[300],
             shape: RoundedRectangleBorder(
@@ -37,7 +37,18 @@ class ColorPanel extends StatelessWidget {
                     crossAxisCount: 4,
                     mainAxisSpacing: 24.0,
                     crossAxisSpacing: 20.0,
-                    children: state.colorList.map((color) => getColorSelection(color)).toList(),
+                    children: state.colorList
+                        .asMap()
+                        .map((index, color) {
+                          return MapEntry(index, getColorSelection(
+                            context: context,
+                            color: color,
+                            index: index,
+                            isChosen: (index == state.colorIndex),
+                          ));
+                        })
+                        .values
+                        .toList(),
                   ),
                   SizedBox(height: 32.0),
                   Text('Set duration',
@@ -55,14 +66,24 @@ class ColorPanel extends StatelessWidget {
   }
 }
 
-Widget getColorSelection(Color color) {
+Widget getColorSelection(
+    {BuildContext context, Color color, int index, bool isChosen}) {
   return GestureDetector(
     child: Material(
       color: Colors.grey[300],
+      shape: CircleBorder(
+        side: isChosen ? BorderSide(width: 1.5) : BorderSide.none,
+      ),
       child: CircleAvatar(
         backgroundColor: color,
         radius: 20.0,
+        child: (isChosen
+            ? Icon(Icons.airport_shuttle, color: Colors.black)
+            : null),
       ),
     ),
+    onTap: () {
+      context.bloc<ColorPanelBloc>().add(ColorTappedEvent(colorIndex: index));
+    },
   );
 }

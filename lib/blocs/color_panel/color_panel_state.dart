@@ -17,7 +17,7 @@ class ColorPanelState {
 }
 
 final List<Color> defaultColorList = [
-  Colors.grey,
+  Colors.white,
   Colors.pink,
   Colors.red,
   Colors.orange,

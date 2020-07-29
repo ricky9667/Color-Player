@@ -7,15 +7,7 @@ class MusicTrack extends StatelessWidget {
       appBar: AppBar(
         title: Text('Music Track'),
       ),
-      body: Container(
-        child: RaisedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Back'),
-          color: Colors.grey[300],
-        ),
-      ),
+      body: Container(),
     );
   }
 }

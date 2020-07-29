@@ -21,7 +21,7 @@ class ColorPanel extends StatelessWidget {
             ),
             elevation: 5.0,
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(24.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -36,16 +36,18 @@ class ColorPanel extends StatelessWidget {
                     shrinkWrap: true,
                     crossAxisCount: 4,
                     mainAxisSpacing: 24.0,
-                    crossAxisSpacing: 20.0,
+                    crossAxisSpacing: 32.0,
                     children: state.colorList
                         .asMap()
                         .map((index, color) {
-                          return MapEntry(index, getColorSelection(
-                            context: context,
-                            color: color,
-                            index: index,
-                            isChosen: (index == state.colorIndex),
-                          ));
+                          return MapEntry(
+                              index,
+                              getColorSelection(
+                                context: context,
+                                color: color,
+                                index: index,
+                                isChosen: (index == state.colorIndex),
+                              ));
                         })
                         .values
                         .toList(),
@@ -81,6 +83,7 @@ Widget getColorSelection(
             ? Icon(Icons.airport_shuttle, color: Colors.black)
             : null),
       ),
+      elevation: (isChosen ? 4.0 : 0),
     ),
     onTap: () {
       context.bloc<ColorPanelBloc>().add(ColorTappedEvent(colorIndex: index));

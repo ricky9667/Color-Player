@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_color_player/blocs/color_panel/color_panel_bloc.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class ColorPanel extends StatelessWidget {
   @override
@@ -66,27 +67,67 @@ class ColorPanel extends StatelessWidget {
       }),
     );
   }
-}
 
-Widget getColorSelection(
-    {BuildContext context, Color color, int index, bool isChosen}) {
-  return GestureDetector(
-    child: Material(
-      color: Colors.grey[300],
-      shape: CircleBorder(
-        side: isChosen ? BorderSide(width: 1.5) : BorderSide.none,
+  Widget getColorSelection(
+      {BuildContext context, Color color, int index, bool isChosen}) {
+    return GestureDetector(
+      child: Material(
+        color: Colors.grey[300],
+        shape: CircleBorder(
+          side: isChosen ? BorderSide(width: 1.5) : BorderSide.none,
+        ),
+        child: CircleAvatar(
+          backgroundColor: color,
+          radius: 20.0,
+          child: (isChosen ? Icon(Icons.check, color: Colors.black) : null),
+        ),
+        elevation: (isChosen ? 4.0 : 0),
       ),
-      child: CircleAvatar(
-        backgroundColor: color,
-        radius: 20.0,
-        child: (isChosen
-            ? Icon(Icons.airport_shuttle, color: Colors.black)
-            : null),
-      ),
-      elevation: (isChosen ? 4.0 : 0),
-    ),
-    onTap: () {
-      context.bloc<ColorPanelBloc>().add(ColorTappedEvent(colorIndex: index));
-    },
-  );
+      onTap: () {
+        context.bloc<ColorPanelBloc>().add(ColorTappedEvent(colorIndex: index));
+      },
+      onLongPress: () async {
+        dynamic chosenColor = await showColorPickerDialog(context: context, chosenColor: color);
+        if (chosenColor == null) {
+          print('ColorPicker returns null');
+          context.bloc<ColorPanelBloc>().add(ColorLongPressEvent(colorIndex: index, newColor: color));
+        } else {
+          print('ColorPicker does not returns null');
+          context.bloc<ColorPanelBloc>().add(ColorLongPressEvent(colorIndex: index, newColor: chosenColor));
+        }
+      },
+    );
+  }
+
+  Future<Color> showColorPickerDialog({BuildContext context, Color chosenColor}) {
+    Color selectedColor = chosenColor;
+    return showDialog<Color>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Pick a color'),
+          content: SingleChildScrollView(
+            child: ColorPicker(
+              pickerColor: chosenColor,
+              enableAlpha: false,
+              showLabel: true,
+              paletteType: PaletteType.hsv,
+              onColorChanged: (newColor) {
+                selectedColor = newColor;
+              },
+              pickerAreaHeightPercent: 0.6,
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Select'),
+              onPressed: () {
+                Navigator.of(context).pop(selectedColor);
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
 }

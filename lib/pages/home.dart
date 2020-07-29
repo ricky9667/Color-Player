@@ -16,7 +16,7 @@ class Home extends StatelessWidget {
             RaisedButton.icon(
               onPressed: () {
                 print('Color panel clicked');
-                Navigator.pushNamed(context, '/color_panel');
+                Navigator.pushNamed(context, '/blocs.color_panel');
               },
               icon: Icon(Icons.palette),
               label: Text('Color panel'),
@@ -25,7 +25,7 @@ class Home extends StatelessWidget {
             RaisedButton.icon(
               onPressed: () {
                 print('Music track clicked');
-                Navigator.pushNamed(context, '/music_track');
+                Navigator.pushNamed(context, '/blocs.music_track');
               },
               icon: Icon(Icons.music_note),
               label: Text('Music track'),

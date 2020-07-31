@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_color_player/blocs/color_panel/color_panel_bloc.dart';
+import 'package:flutter_color_player/blocs/music_track/music_track_bloc.dart';
 import 'package:flutter_color_player/pages/color_panel.dart';
 import 'package:flutter_color_player/pages/home.dart';
 import 'package:flutter_color_player/pages/music_track.dart';
@@ -11,7 +12,6 @@ void main() async {
   if (await Permission.storage.status != PermissionStatus.granted){
     Permission.storage.request().isGranted;
   }
-
   runApp(MyApp());
 }
 
@@ -23,6 +23,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<ColorPanelBloc>(
           create: (context) => ColorPanelBloc(),
         ),
+        BlocProvider<MusicTrackBloc>(
+          create: (context) => MusicTrackBloc()..add(FetchPathEvent()),
+        )
       ],
       child: MaterialApp(
         title: 'Color Player',

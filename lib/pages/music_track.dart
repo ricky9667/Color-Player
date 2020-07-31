@@ -10,18 +10,37 @@ class MusicTrack extends StatelessWidget {
       appBar: AppBar(
         title: Text('Music Track'),
       ),
-      body: Container(
-        child: Center(
-          child: RaisedButton.icon(
-            onPressed: () {
-              playTrack();
-            },
-            icon: Icon(Icons.play_arrow),
-            label: Text('Play Track'),
-          ),
-        ),
-      )
+      body: BlocBuilder<MusicTrackBloc, MusicTrackState>(
+        builder: (context, state) {
+          MusicTrackBloc musicTrackBloc = context.bloc<MusicTrackBloc>();
+          if(musicTrackBloc.trackPaths.isEmpty) {
+            return Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.error),
+                  Text(' No tracks found'),
+                ],
+              ),
+            );
+          }
+          else return Container(
+            child: ListView(
+              children: getTrackList(musicTrackBloc.trackPaths),
+            ),
+          );
+        },
+      ),
     );
+  }
+
+  List<Widget> getTrackList(List<String> trackList) {
+    return trackList.map((item) {
+      return ListTile(
+        leading: Icon(Icons.play_arrow),
+        title: Text(item.split('/').last),
+      );
+    }).toList();
   }
 
   void playTrack() {
@@ -37,19 +56,3 @@ class MusicTrack extends StatelessWidget {
     }
   }
 }
-
-/*
-BlocBuilder<MusicTrackBloc, MusicTrackState>(
-        builder: (context, state) {
-          return Container(
-            child: RaisedButton.icon(
-              onPressed: () {
-                playTrack();
-              },
-              icon: Icon(Icons.play_arrow),
-              label: Text('Play Track'),
-            ),
-          );
-        },
-      ),
- */

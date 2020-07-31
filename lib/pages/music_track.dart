@@ -1,6 +1,7 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_color_player/blocs/audio_path/audio_path_bloc.dart';
 import 'package:flutter_color_player/blocs/music_track/music_track_bloc.dart';
 
 class MusicTrack extends StatelessWidget {
@@ -10,10 +11,10 @@ class MusicTrack extends StatelessWidget {
       appBar: AppBar(
         title: Text('Music Track'),
       ),
-      body: BlocBuilder<MusicTrackBloc, MusicTrackState>(
+      body: BlocBuilder<AudioPathBloc, AudioPathState>(
         builder: (context, state) {
-          MusicTrackBloc musicTrackBloc = context.bloc<MusicTrackBloc>();
-          if(musicTrackBloc.trackPaths.isEmpty) {
+          AudioPathBloc audioPathBloc = context.bloc<AudioPathBloc>();
+          if(audioPathBloc.trackPaths.isEmpty) {
             return Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -26,7 +27,7 @@ class MusicTrack extends StatelessWidget {
           }
           else return Container(
             child: ListView(
-              children: getTrackList(musicTrackBloc.trackPaths),
+              children: getTrackList(audioPathBloc.trackPaths),
             ),
           );
         },
@@ -35,19 +36,21 @@ class MusicTrack extends StatelessWidget {
   }
 
   List<Widget> getTrackList(List<String> trackList) {
-    return trackList.map((item) {
-      return ListTile(
-        leading: Icon(Icons.play_arrow),
-        title: Text(item.split('/').last),
+    return trackList.asMap().map((index, item) {
+      return MapEntry(index, ListTile(
+          leading: Icon(Icons.play_arrow),
+          title: Text(item.split('/').last),
+          onTap: () {
+            // play/pause
+          }),
       );
-    }).toList();
+    }).values.toList();
   }
 
-  void playTrack() {
+  void playTrack(String audioPath) {
     final audioPlayer = AssetsAudioPlayer();
-
     try {
-      Audio file = Audio.file('/storage/emulated/0/Music/Climb.mp3');
+      Audio file = Audio.file(audioPath);
       audioPlayer.open(file);
     }
     catch (e){

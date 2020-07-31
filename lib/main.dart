@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_color_player/blocs/audio_path/audio_path_bloc.dart';
 import 'package:flutter_color_player/blocs/color_panel/color_panel_bloc.dart';
 import 'package:flutter_color_player/blocs/music_track/music_track_bloc.dart';
 import 'package:flutter_color_player/pages/color_panel.dart';
@@ -23,8 +24,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<ColorPanelBloc>(
           create: (context) => ColorPanelBloc(),
         ),
-        BlocProvider<MusicTrackBloc>(
-          create: (context) => MusicTrackBloc()..add(FetchPathEvent()),
+        BlocProvider<AudioPathBloc>(
+          create: (context) => AudioPathBloc()..add(FetchPathEvent()),
         )
       ],
       child: MaterialApp(

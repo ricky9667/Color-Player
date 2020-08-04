@@ -13,8 +13,8 @@ class MusicTrack extends StatelessWidget {
       ),
       body: BlocBuilder<AudioPathBloc, AudioPathState>(
         builder: (context, state) {
-          AudioPathBloc audioPathBloc = context.bloc<AudioPathBloc>();
-          if(audioPathBloc.trackPaths.isEmpty) {
+          var audioPathBloc = context.bloc<AudioPathBloc>();
+          if (audioPathBloc.trackPaths.isEmpty) {
             return Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -25,37 +25,37 @@ class MusicTrack extends StatelessWidget {
               ),
             );
           }
-          else return Container(
-            child: ListView(
-              children: getTrackList(audioPathBloc.trackPaths),
-            ),
-          );
+          else
+            return trackListView(audioPathBloc.trackPaths);
         },
       ),
     );
   }
 
-  List<Widget> getTrackList(List<String> trackList) {
-    return trackList.asMap().map((index, item) {
-      return MapEntry(index, ListTile(
-          leading: Icon(Icons.play_arrow),
-          title: Text(item.split('/').last),
-          onTap: () {
-            // play/pause
-          }),
-      );
-    }).values.toList();
-  }
-
-  void playTrack(String audioPath) {
-    final audioPlayer = AssetsAudioPlayer();
-    try {
-      Audio file = Audio.file(audioPath);
-      audioPlayer.open(file);
-    }
-    catch (e){
-      print('ERROR READING AUDIO FILE');
-      print(e.toString());
-    }
+  Widget trackListView(List<String> trackList) {
+    int playingIndex = -1;
+    bool isPlaying = false;
+    return BlocBuilder<MusicTrackBloc, MusicTrackState>(
+        builder: (context, state) {
+          return ListView(
+            children: trackList.asMap().map((index, item) {
+              return MapEntry(index, ListTile(
+                leading: ((isPlaying && playingIndex == index) ? Icon(Icons.pause) : Icon(Icons.play_arrow)),
+                title: Text(item.split('/').last),
+                onTap: () {
+                  if (index == playingIndex && isPlaying) {
+                    context.bloc<MusicTrackBloc>().add(PauseTrackEvent(trackIndex: index));
+                    isPlaying = false;
+                  } else {
+                    playingIndex = index;
+                    context.bloc<MusicTrackBloc>().add(PlayTrackEvent(trackIndex: index, trackPath: trackList[index]));
+                    isPlaying = true;
+                  }
+                },
+              ));
+            }).values.toList(),
+          );
+        }
+    );
   }
 }

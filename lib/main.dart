@@ -26,6 +26,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<AudioPathBloc>(
           create: (context) => AudioPathBloc()..add(FetchPathEvent()),
+        ),
+        BlocProvider<MusicTrackBloc>(
+          create: (context) => MusicTrackBloc(),
         )
       ],
       child: MaterialApp(
